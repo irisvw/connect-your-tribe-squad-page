@@ -22,7 +22,6 @@ const squadResponseJSON = await squadResponse.json()
 // Controleer de data in je console (Let op: dit is _niet_ de console van je browser, maar van NodeJS, in je terminal)
 // console.log(squadResponseJSON)
 
-
 // Maak een nieuwe Express applicatie aan, waarin we de server configureren
 const app = express()
 
@@ -32,38 +31,72 @@ app.use(express.static('public'))
 
 // Stel Liquid in als 'view engine'
 const engine = new Liquid();
-app.engine('liquid', engine.express()); 
+app.engine('liquid', engine.express());
 
 // Stel de map met Liquid templates in
 // Let op: de browser kan deze bestanden niet rechtstreeks laden (zoals voorheen met HTML bestanden)
 app.set('views', './views')
 
 // Zorg dat werken met request data makkelijker wordt
-app.use(express.urlencoded({extended: true}))
-
-
-// Om Views weer te geven, heb je Routes nodig
-// Maak een GET route voor de index
-app.get('/', async function (request, response) {
-  // Haal alle personen uit de WHOIS API op, van dit jaar
-  const personResponse = await fetch('https://fdnd.directus.app/items/person/?sort=name&fields=*,squads.squad_id.name,squads.squad_id.cohort&filter={"_and":[{"squads":{"squad_id":{"tribe":{"name":"FDND Jaar 1"}}}},{"squads":{"squad_id":{"cohort":"2425"}}}]}')
-
-  // En haal daarvan de JSON op
-  const personResponseJSON = await personResponse.json()
-  
-  // personResponseJSON bevat gegevens van alle personen uit alle squads van dit jaar
-  // Je zou dat hier kunnen filteren, sorteren, of zelfs aanpassen, voordat je het doorgeeft aan de view
-
-  // Render index.liquid uit de views map en geef de opgehaalde data mee als variabele, genaamd persons
-  // Geef ook de eerder opgehaalde squad data mee aan de view
-  response.render('index.liquid', {persons: personResponseJSON.data, squads: squadResponseJSON.data})
-})
+app.use(express.urlencoded({ extended: true }))
 
 // Maak een POST route voor de index; hiermee kun je bijvoorbeeld formulieren afvangen
 app.post('/', async function (request, response) {
   // Je zou hier data kunnen opslaan, of veranderen, of wat je maar wilt
   // Er is nog geen afhandeling van POST, redirect naar GET op /
   response.redirect(303, '/')
+})
+
+app.get('/', async function (request, response) {
+  let baseURL = 'https://fdnd.directus.app/items/person/';
+  let personURL = ''; 
+
+  switch (request.query.filter) {
+    case 'january':
+      personURL = personURL + '?filter={"month(birthdate)":"1"}';
+      break;
+    case 'february':
+      personURL = personURL + '?filter={"month(birthdate)":"2"}';
+      break;
+    case 'march':
+      personURL = personURL + '?filter={"month(birthdate)":"3"}';
+      break;
+    case 'april':
+      personURL = personURL + '?filter={"month(birthdate)":"4"}';
+      break;
+    case 'may':
+      personURL = personURL + '?filter={"month(birthdate)":"5"}';
+      break;
+    case 'june':
+      personURL = personURL + '?filter={"month(birthdate)":"6"}';
+      break;
+    case 'july':
+      personURL = personURL + '?filter={"month(birthdate)":"7"}';
+      break;
+    case 'august':
+      personURL = personURL + '?filter={"month(birthdate)":"8"}';
+      break;
+    case 'september':
+      personURL = personURL + '?filter={"month(birthdate)":"9"}';
+      break;
+    case 'october':
+      personURL = personURL + '?filter={"month(birthdate)":"10"}';
+      break;
+    case 'november':
+      personURL = personURL + '?filter={"month(birthdate)":"11"}';
+      break;
+    case 'december':
+      personURL = personURL + '?filter={"month(birthdate)":"12"}';
+      break;
+  }
+
+ baseURL = baseURL + '&fields=*,squads.squad_id.name,squads.squad_id.cohort&filter={"_and":[{"squads":{"squad_id":{"tribe":{"name":"FDND Jaar 1"}}}},{"squads":{"squad_id":{"cohort":"2425"}}},' + personURL + ']}';
+  console.log(baseURL);
+
+  const personResponse = await fetch(baseURL);
+  const personResponseJSON = await personResponse.json()
+
+  response.render('index.liquid', {persons: personResponseJSON.data, squads: squadResponseJSON.data})
 })
 
 
@@ -74,10 +107,10 @@ app.get('/student/:id', async function (request, response) {
   const personDetailResponse = await fetch('https://fdnd.directus.app/items/person/' + request.params.id)
   // En haal daarvan de JSON op
   const personDetailResponseJSON = await personDetailResponse.json()
-  
+
   // Render student.liquid uit de views map en geef de opgehaalde data mee als variable, genaamd person
   // Geef ook de eerder opgehaalde squad data mee aan de view
-  response.render('student.liquid', {person: personDetailResponseJSON.data, squads: squadResponseJSON.data})
+  response.render('student.liquid', { person: personDetailResponseJSON.data, squads: squadResponseJSON.data })
 })
 
 
