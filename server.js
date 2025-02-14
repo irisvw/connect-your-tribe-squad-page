@@ -49,7 +49,7 @@ app.post('/', async function (request, response) {
 
 app.get('/', async function (request, response) {
   let baseURL = 'https://fdnd.directus.app/items/person/';
-  let personURL = ''; 
+  let personURL = '';
 
   switch (request.query.filter) {
     case 'january':
@@ -90,14 +90,12 @@ app.get('/', async function (request, response) {
       break;
   }
 
- baseURL = baseURL + '&fields=*,squads.squad_id.name,squads.squad_id.cohort&filter={"_and":[{"squads":{"squad_id":{"tribe":{"name":"FDND Jaar 1"}}}},{"squads":{"squad_id":{"cohort":"2425"}}},' + personURL + ']}';
-  console.log(personURL);
- console.log(baseURL);
+  baseURL = baseURL + '?fields=*,squads.squad_id.name,squads.squad_id.cohort&filter={"_and":[{"squads":{"squad_id":{"tribe":{"name":"FDND Jaar 1"}}}},{"squads":{"squad_id":{"cohort":"2425"}}},' + personURL + ']}';
 
   const personResponse = await fetch(baseURL);
   const personResponseJSON = await personResponse.json()
 
-  response.render('index.liquid', {persons: personResponseJSON.data, squads: squadResponseJSON.data})
+  response.render('index.liquid', { persons: personResponseJSON.data, squads: squadResponseJSON.data })
 })
 
 
