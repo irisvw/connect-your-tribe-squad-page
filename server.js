@@ -53,45 +53,46 @@ app.get('/', async function (request, response) {
 
   switch (request.query.filter) {
     case 'january':
-      personURL = personURL + '?filter={"month(birthdate)":"1"}';
+      personURL = personURL + '{"month(birthdate)":"1"}';
       break;
     case 'february':
-      personURL = personURL + '?filter={"month(birthdate)":"2"}';
+      personURL = personURL + '{"month(birthdate)":"2"}';
       break;
     case 'march':
-      personURL = personURL + '?filter={"month(birthdate)":"3"}';
+      personURL = personURL + '{"month(birthdate)":"3"}';
       break;
     case 'april':
-      personURL = personURL + '?filter={"month(birthdate)":"4"}';
+      personURL = personURL + '{"month(birthdate)":"4"}';
       break;
     case 'may':
-      personURL = personURL + '?filter={"month(birthdate)":"5"}';
+      personURL = personURL + '{"month(birthdate)":"5"}';
       break;
     case 'june':
-      personURL = personURL + '?filter={"month(birthdate)":"6"}';
+      personURL = personURL + '{"month(birthdate)":"6"}';
       break;
     case 'july':
-      personURL = personURL + '?filter={"month(birthdate)":"7"}';
+      personURL = personURL + '{"month(birthdate)":"7"}';
       break;
     case 'august':
-      personURL = personURL + '?filter={"month(birthdate)":"8"}';
+      personURL = personURL + '{"month(birthdate)":"8"}';
       break;
     case 'september':
-      personURL = personURL + '?filter={"month(birthdate)":"9"}';
+      personURL = personURL + '{"month(birthdate)":"9"}';
       break;
     case 'october':
-      personURL = personURL + '?filter={"month(birthdate)":"10"}';
+      personURL = personURL + '{"month(birthdate)":"10"}';
       break;
     case 'november':
-      personURL = personURL + '?filter={"month(birthdate)":"11"}';
+      personURL = personURL + '{"month(birthdate)":"11"}';
       break;
     case 'december':
-      personURL = personURL + '?filter={"month(birthdate)":"12"}';
+      personURL = personURL + '{"month(birthdate)":"12"}';
       break;
   }
 
  baseURL = baseURL + '&fields=*,squads.squad_id.name,squads.squad_id.cohort&filter={"_and":[{"squads":{"squad_id":{"tribe":{"name":"FDND Jaar 1"}}}},{"squads":{"squad_id":{"cohort":"2425"}}},' + personURL + ']}';
-  console.log(baseURL);
+  console.log(personURL);
+ console.log(baseURL);
 
   const personResponse = await fetch(baseURL);
   const personResponseJSON = await personResponse.json()
